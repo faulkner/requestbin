@@ -1,5 +1,4 @@
-import urllib
-from flask import session, redirect, url_for, escape, request, render_template, make_response
+from flask import session, request, render_template, make_response
 
 from requestbin import app, db
 
@@ -26,6 +25,7 @@ def expand_recent_bins():
             session.modified = True
     return recent
 
+
 @app.endpoint('views.home')
 def home():
     return render_template('home.html', recent=expand_recent_bins())
@@ -41,9 +41,7 @@ def bin(name):
         if bin.private and session.get(bin.name) != bin.secret_key:
             return "Private bin\n", 403
         update_recent_bins(name)
-        return render_template('bin.html',
-            bin=bin,
-            host=request.host)
+        return render_template('bin.html', bin=bin)
     else:
         db.create_request(bin, request)
         resp = make_response("ok\n")
@@ -56,8 +54,8 @@ def docs(name):
     doc = db.lookup_doc(name)
     if doc:
         return render_template('doc.html',
-                content=doc['content'],
-                title=doc['title'],
-                recent=expand_recent_bins())
+                               content=doc['content'],
+                               title=doc['title'],
+                               recent=expand_recent_bins())
     else:
         return "Not found", 404

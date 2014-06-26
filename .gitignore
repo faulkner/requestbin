@@ -1,6 +1,6 @@
-**/**/*.pyc
+*.pyc
 *.egg-info
-**/*.pyc
 serviced.log
 
 codekit-config.json
+instance

@@ -1,12 +1,11 @@
 import time
-import operator
 
 from ..models import Bin
 
-from requestbin import config
+from requestbin import app
 
 class MemoryStorage():
-    cleanup_interval = config.CLEANUP_INTERVAL
+    cleanup_interval = app.config['CLEANUP_INTERVAL']
 
     def __init__(self, bin_ttl):
         self.bin_ttl = bin_ttl

@@ -1,7 +1,8 @@
-from flask import Flask, redirect, url_for
-import config, os
-
 from cStringIO import StringIO
+
+from flask import Flask
+from werkzeug.contrib.fixers import ProxyFix
+
 
 class WSGIRawBody(object):
     def __init__(self, application):
@@ -30,26 +31,21 @@ class WSGIRawBody(object):
         return callback
 
 
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object('requestbin.config')
+app.config.from_pyfile('application.cfg', silent=True)
 
-app = Flask(__name__)
-
-from werkzeug.contrib.fixers import ProxyFix
 app.wsgi_app = WSGIRawBody(ProxyFix(app.wsgi_app))
 
-app.debug = config.DEBUG
-app.secret_key = config.FLASK_SESSION_SECRET_KEY
-app.root_path = os.path.abspath(os.path.dirname(__file__))
-
-if config.BUGSNAG_KEY:
+if app.config.get('BUGSNAG_KEY'):
     import bugsnag
     from bugsnag.flask import handle_exceptions
     bugsnag.configure(
-        api_key=config.BUGSNAG_KEY,
+        api_key=app.config['BUGSNAG_KEY'],
         project_root=app.root_path,
-        # 'production' is a magic string for bugsnag, rest are arbitrary
-        release_stage = config.REALM.replace("prod", "production"),
+        release_stage=app.config.get('REALM'),
         notify_release_stages=["production", "test"],
-        use_ssl = True
+        use_ssl=True
     )
     handle_exceptions(app)
 

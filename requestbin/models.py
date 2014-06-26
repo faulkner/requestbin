@@ -3,7 +3,6 @@ import json
 import time
 import datetime
 import os
-import re
 
 import msgpack
 
@@ -11,10 +10,10 @@ from .util import random_color
 from .util import tinyid
 from .util import solid16x16gif_datauri
 
-from requestbin import config
+from requestbin import app
 
 class Bin(object):
-    max_requests = config.MAX_REQUESTS
+    max_requests = app.config['MAX_REQUESTS']
 
     def __init__(self, private=False):
         self.created = time.time()
@@ -27,11 +26,11 @@ class Bin(object):
 
     def json(self):
         return json.dumps(self.to_dict())
-    
+
     def to_dict(self):
         return dict(
-            private=self.private, 
-            color=self.color, 
+            private=self.private,
+            color=self.color,
             name=self.name,
             request_count=self.request_count)
 
@@ -60,8 +59,8 @@ class Bin(object):
 
 
 class Request(object):
-    ignore_headers = config.IGNORE_HEADERS
-    max_raw_size = config.MAX_RAW_SIZE 
+    ignore_headers = app.config['IGNORE_HEADERS']
+    max_raw_size = app.config['MAX_RAW_SIZE']
 
     def __init__(self, input=None):
         if input:
@@ -88,11 +87,10 @@ class Request(object):
             self.content_length = len(self.raw)
 
             # for header in self.ignore_headers:
-            #     self.raw = re.sub(r'{}: [^\n]+\n'.format(header), 
+            #     self.raw = re.sub(r'{}: [^\n]+\n'.format(header),
             #                         '', self.raw, flags=re.IGNORECASE)
             if self.raw and len(self.raw) > self.max_raw_size:
                 self.raw = self.raw[0:self.max_raw_size]
-
 
     def to_dict(self):
         return dict(

@@ -2,10 +2,10 @@
 {% block head %}
     <script type="text/javascript">
       function createBin() {
-        $.ajax({'url': '/api/v1/bins', 'type': 'POST', 
+        $.ajax({'url': 'api/v1/bins', 'type': 'POST',
           'data': {'private': $('#private').prop("checked")},
           'success': function(data) {
-            window.location.href = "/"+data['name']+"?inspect";
+            window.location.href = data['name']+"?inspect";
           }
         });
       }
@@ -23,7 +23,7 @@
               <p class="banner-button">
                 <a class="btn btn-success btn-large" onclick="createBin()"><i class="icon-plus-sign"></i> Create a RequestBin</a>
               </p>
-              
+
               <p class="banner-option">
                 <label class="checkbox" title="Private bins can only be viewed by you using a browser cookie">
                   <input id="private" type="checkbox" /> &nbsp;Private <small>(only viewable from this browser)</small>

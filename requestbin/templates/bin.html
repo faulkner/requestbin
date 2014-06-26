@@ -5,8 +5,8 @@
 {% block sidebar %}{% endblock %}
 
 {% block binurl %}
-  <a href="/{{bin.name}}?inspect"><i class="icon-circle icon-2x" style="color: rgb{{bin.color}}"></i></a>
-  <input type="text" value="http://{{host}}/{{bin.name}}" onclick="this.select()" /> 
+  <a href="{{bin.name}}?inspect"><i class="icon-circle icon-2x" style="color: rgb{{bin.color}}"></i></a>
+  <input type="text" value="{{request.base_url}}" onclick="this.select()" />
   {% if bin.private %}<i class="icon-lock"></i>{% endif %}
 {% endblock %}
 
@@ -14,37 +14,37 @@
 {% endblock %}
 
 {% block content %}
-    {% for request in bin.requests %}
-      <div class="message-wrapper" id="message-wrapper-{{request.id}}">
+    {% for req in bin.requests %}
+      <div class="message-wrapper" id="{{req.id}}">
         <div class="message-list">
           <div class="row-fluid">
             <div class="span4">
-              http://{{host}}<br>
-              <span class="method">{{request.method}}</span> 
-              <span class="absolute-path">{{request.path}}</span><span class="querystring">{{request.query_string|to_qs}}</span>
+              {{request.url_root}}<br>
+              <span class="method">{{req.method}}</span>
+              <span class="absolute-path">{{req.path}}</span><span class="querystring">{{req.query_string|to_qs}}</span>
             </div>
             <div class="span6 content">
-              {% if request.content_type %}<i class="icon-code"></i>{% endif %} {{request.content_type}}<br>
-              <i class="icon-cloud-upload"></i> {{request.content_length|friendly_size}}
+              {% if req.content_type %}<i class="icon-code"></i>{% endif %} {{req.content_type}}<br>
+              <i class="icon-cloud-upload"></i> {{req.content_length|friendly_size}}
             </div>
             <div class="span2" class="timestamp">
-              <span title="{{request.time|exact_time}}">{{request.time|approximate_time}} ago
-                <a href="#{{request.id}}"><i class="icon-link"></i></a>
+              <span title="{{req.time|exact_time}}">{{req.time|approximate_time}} ago
+                <a href="{{request.url}}#{{req.id}}"><i class="icon-link"></i></a>
               </span><br>
-              From {{request.remote_addr}}
+              From {{req.remote_addr}}
             </div>
           </div>
         </div>
 
-        <div id="detail-{{request.id}}" class="message-detail">
-            {{ message_detail(request) }}
+        <div id="detail-{{req.id}}" class="message-detail">
+            {{ message_detail(req) }}
         </div>
       </div>
     {% else %}
 
       <h4 class="text-center">Bin URL</h4>
       <h2 class="text-center">
-        <input class="xxlarge input-xxlarge" type="text" value="http://{{host}}/{{bin.name}}" onclick="this.select()" style="border-color: rgb{{bin.color}}; border-width: 3px;" /></h2>
+        <input class="xxlarge input-xxlarge" type="text" value="{{request.base_url}}" onclick="this.select()" style="border-color: rgb{{bin.color}}; border-width: 3px;" /></h2>
       <p class="text-center">{% if bin.private %}This is a private bin. Requests are only viewable from this computer.{% endif %}
 
       <hr>
@@ -54,17 +54,17 @@
       <h4>Make a request to get started.</h4>
 
       <h5>cURL</h5>
-      <pre>curl -X POST -d "fizz=buzz" http://{{host}}/{{bin.name}}</pre>
+      <pre>curl -X POST -d "fizz=buzz" {{request.base_url}}</pre>
 
       <h5>Python (with Requests)</h5>
       <pre class="prettyprint">import requests, time
-r = requests.post('http://{{host}}/{{bin.name}}', data={"ts":time.time()})
+r = requests.post('{{request.base_url}}', data={"ts":time.time()})
 print r.status_code
 print r.content</pre>
 
       <h5>Node.js (with request)</h5>
       <pre class="prettyprint">var request = require('request');
-var url ='http://{{host}}/{{bin.name}}'
+var url ='{{request.base_url}}'
 request(url, function (error, response, body) {
   if (!error) {
     console.log(body);
@@ -73,7 +73,7 @@ request(url, function (error, response, body) {
 
       <h5>Ruby</h5>
       <pre class="prettyprint">require 'open-uri'
-result = open('http://{{host}}/{{bin.name}}')
+result = open('{{request.base_url}}')
 result.lines { |f| f.each_line {|line| p line} }</pre>
 
       <h5>C# / .NET</h5>
@@ -93,7 +93,7 @@ namespace RequestBinExample
     private static async Task MakeRequest()
     {
       var httpClient = new HttpClient();
-      var response = await httpClient.GetAsync(new Uri("http://{{host}}/{{bin.name}}"));
+      var response = await httpClient.GetAsync(new Uri("{{request.base_url}}"));
       var body = await response.Content.ReadAsStringAsync();
       Console.WriteLine(body);
     }
@@ -110,7 +110,7 @@ import java.io.*;
 public class RequestBinTutorial {
   public static void main(String[] args) {
     HttpClient client = new HttpClient();
-    GetMethod method = new GetMethod("http://{{host}}/{{bin.name}}");
+    GetMethod method = new GetMethod("{{request.base_url}}");
     try {
       int statusCode = client.executeMethod(method);
       byte[] responseBody = method.getResponseBody();
@@ -126,7 +126,7 @@ public class RequestBinTutorial {
 
       <h5>PHP</h5>
       <pre class="prettyprint">&lt;?php
-    $result = file_get_contents('http://{{host}}/{{bin.name}}');
+    $result = file_get_contents('{{request.base_url}}');
     echo $result;
 ?&gt;</pre>
 
@@ -149,32 +149,32 @@ public class RequestBinTutorial {
 {% endblock %}
 
 
-{% macro message_detail(request) %}
-<div id="request-detail-{{request.id}}" class="request-detail">
+{% macro message_detail(req) %}
+<div id="request-detail-{{req.id}}" class="request-detail">
     <div class="row-fluid">
       <div class="span4">
         <h5>FORM/POST PARAMETERS</h5>
-        {% for k,v in request.form_data %}
+        {% for k,v in req.form_data %}
           <p class="keypair"><strong>{{k}}:</strong> {{v}}</p>
         {% else %}
           <em>None</em>
         {% endfor %}
 
-        {% if request.query_string and not request.query_string is string %}
+        {% if req.query_string and not req.query_string is string %}
           <h5>QUERYSTRING</h5>
-          {% for k,v in request.query_string|dictsort: %}
+          {% for k,v in req.query_string|dictsort: %}
             {% if not v %}
               <p class="keypair"><strong>{{k}}</strong></p>
             {% else %}
               <p class="keypair"><strong>{{k}}:</strong> {{v}}</p>
             {% endif %}
-          {% endfor %} 
+          {% endfor %}
         {% endif %}
       </div>
       <div class="span8">
-        {% if request.headers %}
+        {% if req.headers %}
           <h5>HEADERS</h5>
-            {% for header in request.headers.items() %}
+            {% for header in req.headers.items() %}
               <p class="keypair"><strong>{{header.0}}:</strong> {{header.1|escape}}</p>
             {% endfor %}
         {% endif %}
@@ -182,8 +182,8 @@ public class RequestBinTutorial {
     </div>
 
     <h5>RAW BODY</h5>
-    <div class="request-body" data-id="{{ request.id }}">
-<pre class="body prettyprint">{%if request.raw%}{{request.raw}}{%else%}<em>None</em>{%endif%}</pre>
+    <div class="request-body" data-id="{{ req.id }}">
+<pre class="body prettyprint">{%if req.raw%}{{req.raw}}{%else%}<em>None</em>{%endif%}</pre>
 
   </div>
 </div>

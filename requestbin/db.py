@@ -1,10 +1,7 @@
-import feedparser
-import time
+from requestbin import app
 
-from requestbin import config
-
-bin_ttl = config.BIN_TTL
-storage_backend = config.STORAGE_BACKEND
+bin_ttl = app.config['BIN_TTL']
+storage_backend = app.config['STORAGE_BACKEND']
 
 storage_module, storage_class = storage_backend.rsplit('.', 1)
 

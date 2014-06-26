@@ -1,7 +1,6 @@
 import json
-import operator
 
-from flask import session, make_response, request, render_template
+from flask import session, make_response, request
 from requestbin import app, db
 
 def _response(object, code=200):

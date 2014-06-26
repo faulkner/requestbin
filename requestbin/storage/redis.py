@@ -1,20 +1,19 @@
 from __future__ import absolute_import
 
-import time
-import cPickle as pickle
-
 import redis
 
 from ..models import Bin
-
-from requestbin import config
+from requestbin import app
 
 class RedisStorage():
-    prefix = config.REDIS_PREFIX
+    prefix = app.config['REDIS_PREFIX']
 
     def __init__(self, bin_ttl):
         self.bin_ttl = bin_ttl
-        self.redis = redis.StrictRedis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, password=config.REDIS_PASSWORD)
+        self.redis = redis.StrictRedis(host=app.config['REDIS_HOST'],
+                                       port=app.config['REDIS_PORT'],
+                                       db=app.config['REDIS_DB'],
+                                       password=app.config['REDIS_PASSWORD'])
 
     def _key(self, name):
         return '{}_{}'.format(self.prefix, name)
@@ -26,14 +25,14 @@ class RedisStorage():
         bin = Bin(private)
         key = self._key(bin.name)
         self.redis.set(key, bin.dump())
-        self.redis.expireat(key, int(bin.created+self.bin_ttl))
+        self.redis.expireat(key, int(bin.created + self.bin_ttl))
         return bin
 
     def create_request(self, bin, request):
         bin.add(request)
         key = self._key(bin.name)
         self.redis.set(key, bin.dump())
-        self.redis.expireat(key, int(bin.created+self.bin_ttl))
+        self.redis.expireat(key, int(bin.created + self.bin_ttl))
 
         self.redis.setnx(self._request_count_key(), 0)
         self.redis.incr(self._request_count_key())

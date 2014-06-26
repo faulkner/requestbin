@@ -2,14 +2,15 @@
 <html>
   <head>
     <title>{% block title %}RequestBin &mdash; Collect, inspect and debug HTTP requests and webhooks{% endblock %}</title>
-    {% block icon %}<link href="/static/img/logo.png" rel="shortcut icon" />{% endblock %}
-    <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
-    <link href="/static/css/responsive.css" rel="stylesheet" media="screen">
-    <link href="/static/css/styles.css" rel="stylesheet" media="screen">
-    <link href="/static/css/font-awesome.min.css" rel="stylesheet" media="screen">
-    <link type="text/css" href="/static/css/prettify.css" rel="stylesheet" />
-    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/static/js/prettify.js"></script>
+    <base href="/{% if config.APPLICATION_ROOT %}{{ config.APPLICATION_ROOT }}/{% endif %}" />
+    {% block icon %}<link href="static/img/logo.png" rel="shortcut icon" />{% endblock %}
+    <link href="static/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="static/css/responsive.css" rel="stylesheet" media="screen">
+    <link href="static/css/styles.css" rel="stylesheet" media="screen">
+    <link href="static/css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <link type="text/css" href="static/css/prettify.css" rel="stylesheet" />
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/prettify.js"></script>
     {% block head %}{% endblock %}
   </head>
   <body onload="prettyPrint()">
@@ -23,8 +24,8 @@
         <header class="row-fluid">
             <div class="span12">
               <h1 class="logo">
-                <a href="/"><img src="/static/img/logo-2x.png" height="38" width="44" /></a>
-                <a href="/"><span class="logo-accent">Request</span>Bin</a>
+                <a href=""><img src="static/img/logo-2x.png" height="38" width="44" /></a>
+                <a href=""><span class="logo-accent">Request</span>Bin</a>
               </h1>
                 <nav>
                     <ul class="nav-menu">
@@ -50,8 +51,8 @@
           <ul id="recent">
             {% for bin in recent %}
             <li>
-              <a href="/{{bin.name}}?inspect"><i class="icon-circle" style="color: rgb{{bin.color}}"></i></a>
-              <a href="/{{bin.name}}?inspect">{{bin.name}}</a> {% if bin.private %}<i class="icon-lock"></i>{% endif %}
+              <a href="{{bin.name}}?inspect"><i class="icon-circle" style="color: rgb{{bin.color}}"></i></a>
+              <a href="{{bin.name}}?inspect">{{bin.name}}</a> {% if bin.private %}<i class="icon-lock"></i>{% endif %}
               ({{bin.request_count}})
               
             </li>
@@ -70,7 +71,7 @@
         <footer class="row-fluid">
             <div class="span12">
                 <div class="footer-logo">
-                    <img src="/static/img/logo-runscope-2x.png" height="34" width="34">
+                    <img src="static/img/logo-runscope-2x.png" height="34" width="34">
                 </div>
                 <h3 class="footer-slogan">
                   RequestBin is brought to you by Runscope.<br>Solve API errors fast. Debug, test and share your API calls.
@@ -79,7 +80,7 @@
                 </h3>
 
                 <p class="footer-hero">
-                    <a href="https://www.runscope.com/?utm_source=partner&amp;utm_medium=link&amp;utm_campaign=requestbin" title="Learn More"><img src="/static/img/runscope-hero.png"></a>
+                    <a href="https://www.runscope.com/?utm_source=partner&amp;utm_medium=link&amp;utm_campaign=requestbin" title="Learn More"><img src="static/img/runscope-hero.png"></a>
                 </p>
 
                 <ul class="footer-menu">
