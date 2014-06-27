@@ -69,6 +69,4 @@ app.add_url_rule('/api/v1/bins/<bin>/requests/<name>', 'api.request', methods=['
 
 app.add_url_rule('/api/v1/stats', 'api.stats')
 
-# app.add_url_rule('/robots.txt', redirect_to=url_for('static', filename='robots.txt'))
-
 from requestbin import api, views

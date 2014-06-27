@@ -44,9 +44,7 @@ def bin(name):
         return render_template('bin.html', bin=bin)
     else:
         db.create_request(bin, request)
-        resp = make_response("ok\n")
-        resp.headers['Sponsored-By'] = "https://www.runscope.com"
-        return resp
+        return make_response("ok\n")
 
 
 @app.endpoint('views.docs')

@@ -46,12 +46,6 @@ hr {
   padding: 4px 12px;
   color: #ffffff;
 }
-.runscope-wrap {
-  padding: 4px 20px;
-  background: #f9f9f9;
-  border-bottom: 1px solid #eeeeee;
-  border-top: 1px solid #ffffff;
-}
 .tagline {
   display: inline;
   float: right;
@@ -155,13 +149,6 @@ header {
   line-height: 18px;
   font-weight: bold;
 }
-/*.banner-tut-step-bonus {
-    opacity: .4;
-}
-
-.banner-tut-step-bonus:hover {
-    opacity: 1;
-}*/
 .section-header {
   color: #061427;
   font-size: 24px;
@@ -187,7 +174,7 @@ header {
   background: #061427;
   color: #ffffff;
   font-size: 14px;
-  padding: 60px 20px 60px;
+  padding: 20px 20px 10px;
 }
 .footer-slogan,
 .footer-menu,
@@ -226,7 +213,7 @@ header {
   display: block;
   clear: both;
   color: rgba(255, 255, 255, 0.19999999999999996);
-  padding-top: 40px;
+  padding-top: 0px;
 }
 .services-link {
   font-size: 24px;
